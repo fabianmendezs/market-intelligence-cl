@@ -7,7 +7,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from groq import Groq
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import Header, Mail
 
 # --- Carga de variables de entorno ---
 load_dotenv()
@@ -189,13 +189,33 @@ html_body = f"""
 
 
 # ── 5. ENVÍO POR SENDGRID ─────────────────────────────────────────────────────
-# try/except para registrar el error sin abortar si falla el envío
+plain_text_body = f"""\
+Market Intelligence CL — Cierre {HOY}
+Datos correspondientes al cierre del mercado del {HOY}.
+
+== ANÁLISIS IA — Llama 3.3 70B ==
+
+{analisis_ia}
+
+== RESUMEN DEL MERCADO ==
+
+{resumen_datos}
+
+---
+Generado automáticamente · Market Intelligence CL
+Los datos son referenciales y no constituyen asesoría financiera.
+Para cancelar la suscripción: unsubscribe@frmendez.com
+"""
+
 mensaje = Mail(
-    from_email=os.getenv("SMTP_USER"),
+    from_email=("Market Intelligence CL", os.getenv("SMTP_USER")),
     to_emails=os.getenv("DESTINATARIO"),
-    subject=f"📊 Market Intelligence CL — Cierre {HOY}",
+    subject=f"[Market Intelligence CL] — Cierre {HOY}",
     html_content=html_body,
+    plain_text_content=plain_text_body,
 )
+mensaje.header = Header("List-Unsubscribe", "<mailto:unsubscribe@frmendez.com>")
+mensaje.header = Header("Precedence", "bulk")
 
 try:
     sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
