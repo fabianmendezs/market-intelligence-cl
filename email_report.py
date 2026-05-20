@@ -153,16 +153,13 @@ html_body = f"""
       <p style="margin:0;font-size:0.85rem;color:#718096;">
         Reporte diario · {HOY} · Fuente: Yahoo Finance
       </p>
+      <p style="margin:6px 0 0 0;font-size:0.8rem;color:#718096;">
+        Datos correspondientes al cierre del mercado del {HOY}.
+      </p>
     </div>
 
-    <!-- Tarjetas por activo -->
-    <h2 style="margin:0 0 16px 0;font-size:1rem;font-weight:700;color:#a0aec0;text-transform:uppercase;letter-spacing:0.05em;">
-      Resumen del mercado
-    </h2>
-    {tarjetas_html}
-
     <!-- Análisis IA -->
-    <div style="margin-top:28px;background:#1c2333;border-radius:12px;padding:24px;
+    <div style="margin-bottom:28px;background:#1c2333;border-radius:12px;padding:24px;
                 border-left:4px solid #00d4aa;border-top:1px solid #2d3748;
                 border-right:1px solid #2d3748;border-bottom:1px solid #2d3748;">
       <h2 style="margin:0 0 16px 0;font-size:1rem;font-weight:700;color:#00d4aa;text-transform:uppercase;letter-spacing:0.05em;">
@@ -172,6 +169,12 @@ html_body = f"""
         {parrafos_ia}
       </div>
     </div>
+
+    <!-- Tarjetas por activo -->
+    <h2 style="margin:0 0 16px 0;font-size:1rem;font-weight:700;color:#a0aec0;text-transform:uppercase;letter-spacing:0.05em;">
+      Resumen del mercado
+    </h2>
+    {tarjetas_html}
 
     <!-- Pie de página -->
     <p style="margin-top:28px;font-size:0.75rem;color:#4a5568;text-align:center;">
@@ -188,7 +191,7 @@ html_body = f"""
 mensaje = Mail(
     from_email=os.getenv("SMTP_USER"),
     to_emails=os.getenv("DESTINATARIO"),
-    subject=f"📊 Market Intelligence CL — {HOY}",
+    subject=f"📊 Market Intelligence CL — Cierre {HOY}",
     html_content=html_body,
 )
 
