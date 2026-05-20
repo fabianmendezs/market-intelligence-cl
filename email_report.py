@@ -7,7 +7,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from groq import Groq
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Header, Mail
+from sendgrid.helpers.mail import Email, Header, Mail
 
 # --- Carga de variables de entorno ---
 load_dotenv()
@@ -208,7 +208,7 @@ Para cancelar la suscripción: unsubscribe@frmendez.com
 """
 
 mensaje = Mail(
-    from_email=("Market Intelligence CL", os.getenv("SMTP_USER")),
+    from_email=Email(os.getenv("SMTP_USER"), "Market Intelligence CL"),
     to_emails=os.getenv("DESTINATARIO"),
     subject=f"[Market Intelligence CL] — Cierre {HOY}",
     html_content=html_body,
