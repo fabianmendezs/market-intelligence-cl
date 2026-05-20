@@ -111,23 +111,33 @@ def tarjeta_activo(row: pd.Series) -> str:
     color_tend = "#00d4aa" if row["close"] > row["ma30"] else "#ff4b6e"
 
     return f"""
-    <div style="background:#1c2333;border-radius:12px;padding:20px;margin-bottom:12px;border:1px solid #2d3748;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <div>
-          <span style="font-size:0.75rem;color:#a0aec0;text-transform:uppercase;letter-spacing:0.05em;">{nombre}</span><br>
-          <span style="font-size:1.1rem;font-weight:700;color:#e2e8f0;">{ticker}</span>
-        </div>
-        <div style="text-align:right;">
-          <span style="font-size:1.4rem;font-weight:800;color:#e2e8f0;">{row['close']:.2f}</span><br>
-          <span style="font-size:0.9rem;font-weight:600;color:{color_var};">{var_str}</span>
-        </div>
-      </div>
-      <div style="display:flex;gap:16px;font-size:0.8rem;color:#718096;margin-top:8px;">
-        <span>MA7: <strong style="color:#e2e8f0;">{row['ma7']:.2f}</strong></span>
-        <span>MA30: <strong style="color:#e2e8f0;">{row['ma30']:.2f}</strong></span>
-        <span style="color:{color_tend};font-weight:600;">{tendencia}</span>
-      </div>
-    </div>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#1c2333;border-radius:12px;border:1px solid #2d3748;margin-bottom:12px;">
+      <tr>
+        <td style="padding:18px 20px 2px 20px;font-size:0.75rem;color:#a0aec0;text-transform:uppercase;letter-spacing:0.05em;">
+          {nombre}
+        </td>
+        <td style="padding:18px 20px 2px 20px;text-align:right;font-size:1.4rem;font-weight:800;color:#e2e8f0;">
+          {row['close']:.2f}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:2px 20px 16px 20px;font-size:1.1rem;font-weight:700;color:#e2e8f0;">
+          {ticker}
+        </td>
+        <td style="padding:2px 20px 16px 20px;text-align:right;font-size:0.9rem;font-weight:600;color:{color_var};">
+          {var_str}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" style="padding:10px 20px 16px 20px;border-top:1px solid #2d3748;font-size:0.8rem;color:#718096;">
+          MA7: <strong style="color:#e2e8f0;">{row['ma7']:.2f}</strong>
+          &nbsp;&nbsp;&nbsp;
+          MA30: <strong style="color:#e2e8f0;">{row['ma30']:.2f}</strong>
+          &nbsp;&nbsp;&nbsp;
+          <span style="color:{color_tend};font-weight:600;">{tendencia}</span>
+        </td>
+      </tr>
+    </table>
     """
 
 tarjetas_html = "".join(tarjeta_activo(row) for _, row in ultimo.iterrows())
