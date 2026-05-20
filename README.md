@@ -42,7 +42,13 @@ Streamlit (app.py)
 email_report.py
     └── Lee mart_indicators → construye resumen estructurado
     └── Envía datos a Groq (Llama 3.3 70B) → análisis en lenguaje natural
-    └── Construye email HTML y lo envía vía SendGrid
+    └── Convierte markdown del análisis a HTML (**texto** → <strong>)
+    └── Construye versión HTML (análisis IA primero → tarjetas por activo
+        con layout <table> compatible con Gmail) y versión texto plano
+    └── Asunto: "[Market Intelligence CL] — Cierre {fecha}"
+    └── Remitente con nombre visible: Email(SMTP_USER, "Market Intelligence CL")
+    └── Headers de deliverability: List-Unsubscribe, Precedence: bulk
+    └── Envía vía SendGrid
 ```
 
 **Flujo diario (lunes a viernes):**

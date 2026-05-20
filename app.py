@@ -88,6 +88,16 @@ st.markdown("""
     color: #718096 !important;
     font-size: 0.85rem !important;
   }
+
+  /* Header/toolbar superior */
+  header[data-testid="stHeader"] {
+    background-color: #0e1117 !important;
+  }
+
+  /* Contenedor principal */
+  .block-container {
+    background-color: #0e1117;
+  }
 </style>
 """, unsafe_allow_html=True)
 
@@ -144,13 +154,11 @@ df_ticker = df[df["ticker"] == ticker_sel].sort_values("date")
 
 fig = go.Figure()
 
-# Línea de precio de cierre con relleno sutil hacia el eje X
+# Línea de precio de cierre
 fig.add_trace(go.Scatter(
     x=df_ticker["date"], y=df_ticker["close"],
     name="Close",
     line=dict(color="#00d4aa", width=2),
-    fill="tozeroy",
-    fillcolor="rgba(0,212,170,0.06)",
 ))
 
 # Media móvil de 7 días
@@ -167,6 +175,11 @@ fig.add_trace(go.Scatter(
     line=dict(color="#ff4b6e", width=1.5, dash="dash"),
 ))
 
+# Rango Y ajustado al mínimo/máximo real de los datos con margen del 3%
+y_vals = pd.concat([df_ticker["close"], df_ticker["ma7"].dropna(), df_ticker["ma30"].dropna()])
+y_min, y_max = y_vals.min(), y_vals.max()
+y_buf = (y_max - y_min) * 0.03
+
 # Tema oscuro con fondo transparente para integrarse al CSS de la app
 fig.update_layout(
     template="plotly_dark",
@@ -177,7 +190,7 @@ fig.update_layout(
         font=dict(size=16, color="#e2e8f0"),
     ),
     xaxis=dict(title="Fecha", gridcolor="#2d3748", showline=False),
-    yaxis=dict(title="Precio", gridcolor="#2d3748", showline=False),
+    yaxis=dict(title="Precio", gridcolor="#2d3748", showline=False, range=[y_min - y_buf, y_max + y_buf]),
     legend=dict(
         orientation="h",
         yanchor="bottom", y=1.02,
@@ -196,7 +209,7 @@ st.divider()
 st.subheader(f"Detalle — últimos 30 registros de {ticker_sel}")
 
 cols_tabla = ["date", "close", "daily_change_pct", "ma7", "ma30"]
-ultimos = df_ticker[cols_tabla].tail(30).copy()
+ultimos = df_ticker[cols_tabla].tail(30).sort_values("date", ascending=False).copy()
 
 # Formatear columnas numéricas a 2 decimales para mejor legibilidad
 for col in ["close", "daily_change_pct", "ma7", "ma30"]:
@@ -211,4 +224,13 @@ ultimos = ultimos.rename(columns={
     "ma30": "MA 30",
 })
 
-st.dataframe(ultimos, use_container_width=True, hide_index=True)
+ultimos_styled = ultimos.style.set_properties(**{
+    "background-color": "#1c2333",
+    "color": "#e2e8f0",
+    "border-color": "#2d3748",
+}).set_table_styles([
+    {"selector": "th", "props": [("background-color", "#2d3748"), ("color", "#a0aec0"), ("border", "1px solid #2d3748")]},
+    {"selector": "td", "props": [("border", "1px solid #2d3748")]},
+])
+
+st.dataframe(ultimos_styled, use_container_width=True, hide_index=True)
