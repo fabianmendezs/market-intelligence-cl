@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime, timedelta
 
 import duckdb
@@ -132,9 +133,10 @@ def tarjeta_activo(row: pd.Series) -> str:
 tarjetas_html = "".join(tarjeta_activo(row) for _, row in ultimo.iterrows())
 
 # Párrafos del análisis IA formateados como bloques de texto
+analisis_ia_html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', analisis_ia)
 parrafos_ia = "".join(
     f'<p style="margin:0 0 10px 0;line-height:1.6;">{p.strip()}</p>'
-    for p in analisis_ia.strip().split("\n")
+    for p in analisis_ia_html.strip().split("\n")
     if p.strip()
 )
 
