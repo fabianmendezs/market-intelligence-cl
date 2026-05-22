@@ -1,1 +1,0 @@
-{"_invocation_id": "a120f7ce-7a73-416d-b361-c3c33e08aa1e", "linked": {"0": {"name": "model.dbt_project.mart_indicators", "type": "model"}, "1": {"name": "model.dbt_project.stg_prices", "type": "model", "succ": [0]}}}
