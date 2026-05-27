@@ -45,7 +45,7 @@ email_report.py
     └── Convierte markdown del análisis a HTML (**texto** → <strong>)
     └── Construye versión HTML (análisis IA primero → tarjetas por activo
         con layout <table> compatible con Gmail) y versión texto plano
-    └── Asunto: "[Market Intelligence CL] — Cierre {fecha}"
+    └── Asunto: "[Market Intelligence CL] | Cierre {fecha}"
     └── Remitente con nombre visible: Email(SMTP_USER, "Market Intelligence CL")
     └── Headers de deliverability: List-Unsubscribe, Precedence: bulk
     └── Envía vía SendGrid
@@ -91,7 +91,7 @@ pip install -r requirements.txt
 
 # Configurar variables de entorno
 cp .env.example .env
-# Completar GROQ_API_KEY, SENDGRID_API_KEY, SMTP_USER, DESTINATARIO
+# Completar GROQ_API_KEY, SENDGRID_API_KEY, SMTP_USER, DESTINATARIO en el .env
 
 # Descargar datos y transformar
 python ingest.py
@@ -103,6 +103,33 @@ streamlit run app.py
 # Enviar reporte por email
 python email_report.py
 ```
+
+---
+
+## Seguridad
+
+### Gestión de credenciales
+
+- **Las API keys viven únicamente en `.env`** — este archivo está en `.gitignore` y **nunca se commitea**.
+- El repo incluye `.env.example` con los nombres de las variables (sin valores) para guiar el deploy inicial.
+- Todos los scripts leen las claves con `os.getenv()` — no hay credenciales hardcodeadas en ningún `.py`.
+
+### Archivos excluidos del repo (`.gitignore`)
+
+| Archivo / carpeta | Motivo |
+|---|---|
+| `.env` | Contiene API keys reales |
+| `data/` | Base de datos DuckDB (archivo binario, se genera en el primer `ingest.py`) |
+| `dbt_project/target/` | Archivos compilados generados por dbt — se recrean en cada ejecución |
+| `dbt_project/.user.yml` | ID de sesión local de dbt — no pertenece al control de versiones |
+| `dbt_project/logs/` | Logs de ejecución de dbt |
+| `venv/` | Entorno virtual local |
+
+### Checklist antes de cada `git push`
+
+- [ ] `git status` no muestra `.env` ni archivos de `data/`
+- [ ] No hay credenciales hardcodeadas en ningún `.py`
+- [ ] `dbt_project/target/` y `dbt_project/.user.yml` no aparecen en el staging
 
 ---
 
